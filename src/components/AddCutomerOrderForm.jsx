@@ -13,12 +13,12 @@ import {
   TextField,
 } from "@mui/material";
 
-const useInputForm = () => {
+const useCustomerForm = () => {
   const [dialog, setDialog] = React.useState({ isShown: false });
 
   const handleClose = () => setDialog(false);
 
-  const InputForm = () => (
+  const CustomerForm = () => (
     <Dialog open={dialog.isShown} onClose={handleClose}>
       {/* <DialogTitle>Subscribe</DialogTitle> */}
       <DialogContent>
@@ -49,7 +49,7 @@ const useInputForm = () => {
     </Dialog>
   );
 
-  return [InputForm, setDialog];
+  return [CustomerForm, setDialog];
 };
 
-export default useInputForm;
+export default useCustomerForm;

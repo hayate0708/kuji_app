@@ -2,7 +2,8 @@ import React from "react";
 
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useWindowDimension } from "components/common/WindowDimension";
-import useInputForm from "components/InputForm";
+import useCustomerForm from "components/CustomerForm";
+import useAdministratorForm from "components/AdministratorForm";
 
 // API
 
@@ -13,7 +14,8 @@ import { Typography, Box, Stack, Button } from "@mui/material";
 const Home = () => {
   const { setTitle } = useGlobalContext();
   const { width, height } = useWindowDimension();
-  const [InputForm, setDialog] = useInputForm();
+  const [CustomerForm, setCustomerDialog] = useCustomerForm();
+  const [AdministratorForm, setAdministratorDialog] = useAdministratorForm();
 
   React.useEffect(() => {
     setTitle("席決めくじ引き");
@@ -21,8 +23,12 @@ const Home = () => {
   }, []);
 
   const selectDivision = (divison) => {
-    setDialog({ isShown: true });
+    setCustomerDialog({ isShown: true });
     console.log(divison);
+  };
+
+  const clickAdministrator = () => {
+    setAdministratorDialog({ isShown: true });
   };
 
   return (
@@ -38,6 +44,7 @@ const Home = () => {
           <Box>
             <Button
               variant="outlined"
+              onClick={clickAdministrator}
               sx={{ width: "20vh", fontWeight: "bold", fontSize: "2vh" }}
             >
               管理者画面
@@ -90,7 +97,8 @@ const Home = () => {
           </Button>
         </Stack>
       </Box>
-      <InputForm />
+      <CustomerForm />
+      <AdministratorForm />
     </>
   );
 };
