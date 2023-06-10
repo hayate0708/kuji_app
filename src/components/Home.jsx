@@ -1,7 +1,10 @@
 import React from "react";
 
+// CONTEXT
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useWindowDimension } from "components/common/WindowDimension";
+
+// COMPONENTS
 import useCustomerForm from "components/CustomerForm";
 import useAdministratorForm from "components/AdministratorForm";
 
@@ -9,7 +12,6 @@ import useAdministratorForm from "components/AdministratorForm";
 
 // MUI
 import { Typography, Box, Stack, Button } from "@mui/material";
-// import TextField from "@mui/material/TextField";
 
 const Home = () => {
   const { setTitle } = useGlobalContext();

@@ -41,7 +41,6 @@ const MaintenancePage = () => {
   const [openAddForm, setOpenAddForm] = React.useState(false);
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
   const [selectedDivision, setSelectedDivision] = React.useState();
-  const [error, setError] = React.useState(false);
 
   const navigate = useNavigate();
 
@@ -134,7 +133,7 @@ const MaintenancePage = () => {
 
   const clickEditFormOk = () => {
     if (editedGroup === "") {
-      setError(true);
+      window.alert("グループを入力してください");
     } else {
       setAllCustomerOrders(
         allCustomerOrders.map((customerOrder) => {
@@ -158,12 +157,11 @@ const MaintenancePage = () => {
 
   const closeEditForm = () => {
     setOpenEditForm(false);
-    setError(false);
   };
 
   const clickAddFormOk = () => {
     if (addedGroup === "") {
-      setError(true);
+      window.alert("グループを入力してください");
     } else {
       for (let i = 0; i < allCustomerOrders.length; i++) {
         if (allCustomerOrders[i].id !== i + 1) {
@@ -201,7 +199,6 @@ const MaintenancePage = () => {
 
   const closeAddForm = () => {
     setOpenAddForm(false);
-    setError(false);
   };
 
   const clickConfirmationOk = () => {
@@ -216,12 +213,6 @@ const MaintenancePage = () => {
 
   const closeConfirmation = () => setOpenConfirmation(false);
 
-  const ErrorMessage = () => (
-    <Typography sx={{ color: "error.main" }}>
-      グループを入力してください
-    </Typography>
-  );
-
   const CustomerTable = ({ division, customerOrders }) => {
     return (
       <Stack direction="column" alignItems="center">
@@ -231,7 +222,7 @@ const MaintenancePage = () => {
         >
           {division === "1" ? "販売店システム部" : "代理店・法人システム部"}
         </Typography>
-        <TableContainer sx={{ width: "70vh" }}>
+        <TableContainer sx={{ minHeight: "10vh", width: "70vh" }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -298,7 +289,6 @@ const MaintenancePage = () => {
         {/* <DialogTitle>Subscribe</DialogTitle> */}
         <DialogContent>
           <DialogContentText>編集</DialogContentText>
-          {error && <ErrorMessage />}
           <TextField
             autoFocus
             margin="dense"
@@ -341,7 +331,6 @@ const MaintenancePage = () => {
         {/* <DialogTitle>Subscribe</DialogTitle> */}
         <DialogContent>
           <DialogContentText>編集</DialogContentText>
-          {error && <ErrorMessage />}
           <TextField
             autoFocus
             margin="dense"
