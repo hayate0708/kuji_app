@@ -1,37 +1,36 @@
 import React from "react";
-import { useWindowDimension } from "components/common/WindowDimension";
 import { useNavigate } from "react-router-dom";
+import { useWindowDimension } from "components/common/WindowDimension";
 import { useGlobalContext } from "contexts/GlobalContext";
-
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Grid from "@mui/material/Grid";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 
 // API
 import customerOrdersApi from "apis/CustomerOrdersApi";
 
 // MUI
 import {
-  Typography,
   Box,
-  Stack,
   Button,
   IconButton,
+  Grid,
+  Stack,
+  Typography,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 const MaintenancePage = () => {
-  const { setTitle, setDialog } = useGlobalContext();
+  const { setTitle } = useGlobalContext();
   const { width, height } = useWindowDimension();
   const [allCustomerOrders, setAllCustomerOrders] = React.useState([]);
   const [dsCustomerOrders, setDsCustomerOrders] = React.useState([]);
@@ -40,7 +39,6 @@ const MaintenancePage = () => {
   const [openEditForm, setOpenEditForm] = React.useState(false);
   const [openAddForm, setOpenAddForm] = React.useState(false);
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
-  const [selectedDivision, setSelectedDivision] = React.useState();
 
   const navigate = useNavigate();
 
@@ -54,6 +52,7 @@ const MaintenancePage = () => {
   React.useEffect(() => {
     setTitle("管理者画面");
     getCustomerOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
@@ -85,6 +84,7 @@ const MaintenancePage = () => {
   const getCustomerOrders = async () => {
     try {
       const response = await customerOrdersApi.getCustomerOrdersApi();
+      console.log(response);
       setAllCustomerOrders(response);
     } catch (error) {
       setDsCustomerOrders([]);
@@ -117,12 +117,19 @@ const MaintenancePage = () => {
   };
 
   const clickEditButton = (customerOrder) => {
+    console.log(customerOrder);
     setSelectedCustomerOrder(customerOrder);
     setOpenEditForm(true);
-    console.log(allCustomerOrders);
   };
+
   const clickAddButton = (division) => {
-    setSelectedDivision(division);
+    setSelectedCustomerOrder({
+      id: null,
+      division,
+      group: null,
+      name: null,
+      drink: null,
+    });
     setOpenAddForm(true);
   };
 
@@ -131,27 +138,19 @@ const MaintenancePage = () => {
     setOpenConfirmation(true);
   };
 
-  const clickEditFormOk = () => {
-    if (editedGroup === "") {
-      window.alert("グループを入力してください");
-    } else {
-      setAllCustomerOrders(
-        allCustomerOrders.map((customerOrder) => {
-          if (customerOrder.id === selectedCustomerOrder.id) {
-            return {
-              id: customerOrder.id,
-              division: customerOrder.division,
-              group: editedGroup,
-              name: editedName,
-              drink: editedDrink,
-            };
-          } else {
-            return customerOrder;
-          }
-        })
-      );
-
+  const clickEditFormOk = async () => {
+    if (editedGroup !== "") {
+      await customerOrdersApi.updateCustomerOrderApi({
+        id: selectedCustomerOrder.id,
+        division: selectedCustomerOrder.division,
+        group: editedGroup,
+        name: editedName,
+        drink: editedDrink,
+      });
+      getCustomerOrders();
       closeEditForm();
+    } else {
+      window.alert("グループを入力してください");
     }
   };
 
@@ -159,41 +158,18 @@ const MaintenancePage = () => {
     setOpenEditForm(false);
   };
 
-  const clickAddFormOk = () => {
-    if (addedGroup === "") {
-      window.alert("グループを入力してください");
-    } else {
-      for (let i = 0; i < allCustomerOrders.length; i++) {
-        if (allCustomerOrders[i].id !== i + 1) {
-          setAllCustomerOrders([
-            ...allCustomerOrders,
-            {
-              id: i + 1,
-              division: selectedDivision,
-              group: addedGroup,
-              name: addedName,
-              drink: addedDrink,
-            },
-          ]);
-
-          break;
-        }
-
-        if (i + 1 === allCustomerOrders.length) {
-          setAllCustomerOrders([
-            ...allCustomerOrders,
-            {
-              id: allCustomerOrders.length + 1,
-              division: selectedDivision,
-              group: addedGroup,
-              name: addedName,
-              drink: addedDrink,
-            },
-          ]);
-        }
-      }
-
+  const clickAddFormOk = async () => {
+    if (addedGroup !== "") {
+      await customerOrdersApi.addCustomerOrderApi({
+        division: selectedCustomerOrder.division,
+        group: addedGroup,
+        name: addedName,
+        drink: addedDrink,
+      });
+      getCustomerOrders();
       closeAddForm();
+    } else {
+      window.alert("グループを入力してください");
     }
   };
 
@@ -201,52 +177,39 @@ const MaintenancePage = () => {
     setOpenAddForm(false);
   };
 
-  const clickConfirmationOk = () => {
-    setAllCustomerOrders(
-      allCustomerOrders.filter((customerOrder) => {
-        return customerOrder.id !== selectedCustomerOrder.id;
-      })
-    );
-
+  const clickConfirmationOk = async () => {
+    await customerOrdersApi.deleteCustomerOrderApi(selectedCustomerOrder.id);
+    getCustomerOrders();
     closeConfirmation();
   };
 
   const closeConfirmation = () => setOpenConfirmation(false);
 
+  const header = ["グループ", "名前", "ドリンク", "編集", "削除"];
+
   const CustomerTable = ({ division, customerOrders }) => {
     return (
       <Stack direction="column" alignItems="center">
-        <Typography
-          align="center"
-          sx={{ mt: "1vh", mb: "2vh", fontSize: "4vh" }}
-        >
+        <Typography align="center" sx={{ mt: "1vh", mb: "2vh", fontSize: "4vh" }}>
           {division === "1" ? "販売店システム部" : "代理店・法人システム部"}
         </Typography>
         <TableContainer sx={{ minHeight: "10vh", width: "70vh" }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ color: "white", bgcolor: "primary.light" }}>
-                  グループ
-                </TableCell>
-                <TableCell sx={{ color: "white", bgcolor: "primary.light" }}>
-                  名前
-                </TableCell>
-                <TableCell sx={{ color: "white", bgcolor: "primary.light" }}>
-                  ドリンク
-                </TableCell>
-                <TableCell sx={{ color: "white", bgcolor: "primary.light" }}>
-                  編集
-                </TableCell>
-                <TableCell sx={{ color: "white", bgcolor: "primary.light" }}>
-                  削除
-                </TableCell>
+                {header.map((title) => {
+                  return (
+                    <TableCell key={title} sx={{ color: "white", bgcolor: "primary.light" }}>
+                      {title}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             </TableHead>
             <TableBody>
               {customerOrders.map((row) => (
                 <TableRow
-                  //   key={row.name}
+                  key={row.id}
                   sx={{
                     "&:last-child td, &:last-child th": { border: 0 },
                     "&:hover": { bgcolor: "#e3f2fd" },
@@ -286,7 +249,6 @@ const MaintenancePage = () => {
   const EditForm = () => {
     return (
       <Dialog open={openEditForm} onClose={closeEditForm}>
-        {/* <DialogTitle>Subscribe</DialogTitle> */}
         <DialogContent>
           <DialogContentText>編集</DialogContentText>
           <TextField
@@ -328,9 +290,8 @@ const MaintenancePage = () => {
   const AddForm = () => {
     return (
       <Dialog open={openAddForm} onClose={closeAddForm}>
-        {/* <DialogTitle>Subscribe</DialogTitle> */}
         <DialogContent>
-          <DialogContentText>編集</DialogContentText>
+          <DialogContentText>追加</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -380,16 +341,13 @@ const MaintenancePage = () => {
       </Dialog>
     );
   };
+
   return (
     <>
       <Box sx={{ height: height, width: width }}>
         <Box sx={{ height: "7vh" }} />
 
-        <Stack
-          direction="row"
-          justifyContent="flex-end"
-          sx={{ my: "3vh", mr: "3vh" }}
-        >
+        <Stack direction="row" justifyContent="flex-end" sx={{ my: "3vh", mr: "3vh" }}>
           <Button
             variant="outlined"
             onClick={clickMainMenu}
@@ -407,20 +365,6 @@ const MaintenancePage = () => {
             <CustomerTable division={"2"} customerOrders={acsCustomerOrders} />
           </Grid>
         </Grid>
-        <Stack direction="row" justifyContent="center">
-          <Button
-            variant="outlined"
-            //   onClick={clickAdministrator}
-            sx={{
-              width: "20vh",
-              fontWeight: "bold",
-              fontSize: "2vh",
-              mt: "3vh",
-            }}
-          >
-            登録
-          </Button>
-        </Stack>
       </Box>
       <EditForm />
       <AddForm />

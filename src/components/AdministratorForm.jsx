@@ -2,20 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import administratorApi from "apis/AdministratorApi";
-import {
-  Box,
-  Grid,
-  Typography,
-  Dialog,
-  IconButton,
-  Stack,
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
-} from "@mui/material";
+import { Typography, Dialog, Button, DialogActions, DialogContent, DialogContentText, TextField } from "@mui/material";
 
 const useAdministratorForm = () => {
   const [dialog, setDialog] = React.useState({ isShown: false });
@@ -41,18 +28,14 @@ const useAdministratorForm = () => {
 
   const clickOk = async () => {
     const response = await administratorApi.getAdministratorApi(id, password);
-    if (response === 200) {
+    if (response.name) {
       navigate("/maintenance");
     } else {
       setError(true);
     }
   };
 
-  const ErrorMessage = () => (
-    <Typography sx={{ color: "error.main" }}>
-      IDまたはパスワードが異なります
-    </Typography>
-  );
+  const ErrorMessage = () => <Typography sx={{ color: "error.main" }}>IDまたはパスワードが異なります</Typography>;
 
   const AdministratorForm = () => (
     <Dialog open={dialog.isShown} onClose={handleClose}>
@@ -60,15 +43,7 @@ const useAdministratorForm = () => {
       <DialogContent>
         <DialogContentText>IDとパスワードを入力してください</DialogContentText>
         {error && <ErrorMessage />}
-        <TextField
-          autoFocus
-          margin="dense"
-          id="id"
-          label="ID"
-          fullWidth
-          variant="standard"
-          onChange={textChange}
-        />
+        <TextField autoFocus margin="dense" id="id" label="ID" fullWidth variant="standard" onChange={textChange} />
         <TextField
           autoFocus
           margin="dense"

@@ -1,44 +1,44 @@
-const getCustomerOrdersApi = () => {
-  const response = [
-    { id: 1, division: "1", group: "A", name: "谷口颯", drink: "生" },
-    { id: 2, division: "1", group: "B", name: "谷口颯２", drink: "生" },
-    { id: 3, division: "1", group: "C", name: "谷口颯３", drink: "生" },
-    { id: 4, division: "1", group: "D", name: "谷口颯４", drink: "生" },
-    { id: 5, division: "1", group: "E", name: "谷口颯５", drink: "生" },
-    { id: 6, division: "2", group: "E", name: "石川雄大", drink: "ハイボール" },
-    {
-      id: 7,
-      division: "2",
-      group: "A",
-      name: "石川雄大２",
-      drink: "ハイボール",
-    },
-    {
-      id: 8,
-      division: "2",
-      group: "B",
-      name: "石川雄大３",
-      drink: "ハイボール",
-    },
-    {
-      id: 9,
-      division: "2",
-      group: "C",
-      name: "石川雄大４",
-      drink: "ハイボール",
-    },
-    {
-      id: 10,
-      division: "2",
-      group: "D",
-      name: "石川雄大５",
-      drink: "ハイボール",
-    },
-  ];
+import httpClient from "apis/common/HttpClient";
 
-  return response;
+const urlPrefix = process.env.REACT_APP_URL_PREFIX;
+
+const getCustomerOrdersApi = async () => {
+  try {
+    const url = new URL(`${urlPrefix}customer-orders`);
+    return await httpClient.get(url.href);
+  } catch (error) {
+    throw error;
+  }
 };
 
-const api = { getCustomerOrdersApi };
+const addCustomerOrderApi = async (body) => {
+  try {
+    const url = new URL(`${urlPrefix}add-customer-order`);
+    return await httpClient.post(url.href, body);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateCustomerOrderApi = async (body) => {
+  try {
+    const url = new URL(`${urlPrefix}update-customer-order`);
+    return await httpClient.put(url.href, body);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteCustomerOrderApi = async (id) => {
+  try {
+    const url = new URL(`${urlPrefix}delete-customer-order`);
+    url.searchParams.append("id", id);
+    return await httpClient.del(url.href);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const api = { getCustomerOrdersApi, addCustomerOrderApi, updateCustomerOrderApi, deleteCustomerOrderApi };
 
 export default api;

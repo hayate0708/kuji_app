@@ -14,7 +14,6 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import * as easings from "d3-ease";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -63,9 +62,7 @@ const useCustomerForm = () => {
           <>
             {/* <DialogTitle>Subscribe</DialogTitle> */}
 
-            <DialogContentText>
-              名前とファーストドリンクを入力してください
-            </DialogContentText>
+            <DialogContentText>名前とファーストドリンクを入力してください</DialogContentText>
             {/* {error && <ErrorMessage />} */}
             <TextField
               autoFocus
@@ -93,22 +90,12 @@ const useCustomerForm = () => {
           </>
         )}
         {lottery && !kujiResult && (
-          <Stack
-            direction="row"
-            justifyContent="center"
-            spacing={4}
-            sx={{ my: "5vh" }}
-          >
+          <Stack direction="row" justifyContent="center" spacing={4} sx={{ my: "5vh" }}>
             <CircularProgress size="10vh" />
           </Stack>
         )}
         {kujiResult && (
-          <Stack
-            direction="row"
-            justifyContent="center"
-            spacing={4}
-            sx={{ my: "5vh" }}
-          >
+          <Stack direction="row" justifyContent="center" spacing={4} sx={{ my: "5vh" }}>
             <Typography
               sx={{
                 fontWeight: "bold",
