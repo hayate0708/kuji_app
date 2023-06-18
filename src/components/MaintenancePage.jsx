@@ -37,17 +37,14 @@ const MaintenancePage = () => {
   const [acsCustomerOrders, setAcsCustomerOrders] = React.useState([]);
   const [selectedCustomerOrder, setSelectedCustomerOrder] = React.useState();
   const [openEditForm, setOpenEditForm] = React.useState(false);
-  const [openAddForm, setOpenAddForm] = React.useState(false);
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
+  const [mode, setMode] = React.useState();
 
   const navigate = useNavigate();
 
-  let editedGroup = "";
-  let editedName = "";
-  let editedDrink = "";
-  let addedGroup = "";
-  let addedName = "";
-  let addedDrink = "";
+  let editedGroup = null;
+  let editedName = null;
+  let editedDrink = null;
 
   React.useEffect(() => {
     setTitle("管理者画面");
@@ -84,7 +81,6 @@ const MaintenancePage = () => {
   const getCustomerOrders = async () => {
     try {
       const response = await customerOrdersApi.getCustomerOrdersApi();
-      console.log(response);
       setAllCustomerOrders(response);
     } catch (error) {
       setDsCustomerOrders([]);
@@ -102,27 +98,21 @@ const MaintenancePage = () => {
     }
   };
 
-  const addCustomerOder = (event) => {
-    if (event.target.id === "group") {
-      addedGroup = event.target.value;
-    } else if (event.target.id === "name") {
-      addedName = event.target.value;
-    } else {
-      addedDrink = event.target.value;
-    }
-  };
-
-  const clickMainMenu = () => {
+  const onMainMenuClick = () => {
     navigate("/");
   };
 
-  const clickEditButton = (customerOrder) => {
-    console.log(customerOrder);
+  const onEditButtonClick = (customerOrder) => {
+    editedGroup = customerOrder.group;
+    editedName = customerOrder.name;
+    editedDrink = customerOrder.drink;
+    setMode("edit");
     setSelectedCustomerOrder(customerOrder);
     setOpenEditForm(true);
   };
 
-  const clickAddButton = (division) => {
+  const onAddButtonClick = (division) => {
+    setMode("add");
     setSelectedCustomerOrder({
       id: null,
       division,
@@ -130,23 +120,32 @@ const MaintenancePage = () => {
       name: null,
       drink: null,
     });
-    setOpenAddForm(true);
+    setOpenEditForm(true);
   };
 
-  const clickDeleteButton = (customerOrder) => {
+  const onDeleteButtonClick = (customerOrder) => {
     setSelectedCustomerOrder(customerOrder);
     setOpenConfirmation(true);
   };
 
-  const clickEditFormOk = async () => {
+  const onEditFormOkClick = async () => {
     if (editedGroup !== "") {
-      await customerOrdersApi.updateCustomerOrderApi({
-        id: selectedCustomerOrder.id,
-        division: selectedCustomerOrder.division,
-        group: editedGroup,
-        name: editedName,
-        drink: editedDrink,
-      });
+      if (mode === "edit") {
+        await customerOrdersApi.updateCustomerOrderApi({
+          id: selectedCustomerOrder.id,
+          division: selectedCustomerOrder.division,
+          group: editedGroup,
+          name: editedName,
+          drink: editedDrink,
+        });
+      } else {
+        await customerOrdersApi.addCustomerOrderApi({
+          division: selectedCustomerOrder.division,
+          group: editedGroup,
+          name: editedName,
+          drink: editedDrink,
+        });
+      }
       getCustomerOrders();
       closeEditForm();
     } else {
@@ -158,26 +157,7 @@ const MaintenancePage = () => {
     setOpenEditForm(false);
   };
 
-  const clickAddFormOk = async () => {
-    if (addedGroup !== "") {
-      await customerOrdersApi.addCustomerOrderApi({
-        division: selectedCustomerOrder.division,
-        group: addedGroup,
-        name: addedName,
-        drink: addedDrink,
-      });
-      getCustomerOrders();
-      closeAddForm();
-    } else {
-      window.alert("グループを入力してください");
-    }
-  };
-
-  const closeAddForm = () => {
-    setOpenAddForm(false);
-  };
-
-  const clickConfirmationOk = async () => {
+  const onConfirmationOkClick = async () => {
     await customerOrdersApi.deleteCustomerOrderApi(selectedCustomerOrder.id);
     getCustomerOrders();
     closeConfirmation();
@@ -219,12 +199,12 @@ const MaintenancePage = () => {
                   <TableCell>{row.name}</TableCell>
                   <TableCell>{row.drink}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => clickEditButton(row)}>
+                    <IconButton onClick={() => onEditButtonClick(row)}>
                       <EditIcon />
                     </IconButton>
                   </TableCell>
                   <TableCell>
-                    <IconButton onClick={() => clickDeleteButton(row)}>
+                    <IconButton onClick={() => onDeleteButtonClick(row)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -236,7 +216,7 @@ const MaintenancePage = () => {
         <Button
           variant="outlined"
           onClick={() => {
-            clickAddButton(division);
+            onAddButtonClick(division);
           }}
           sx={{ width: "20vh", fontWeight: "bold", fontSize: "2vh", mt: "3vh" }}
         >
@@ -258,6 +238,7 @@ const MaintenancePage = () => {
             label="グループ"
             fullWidth
             variant="standard"
+            defaultValue={selectedCustomerOrder?.group}
             onChange={editCustomerOder}
           />
           <TextField
@@ -267,6 +248,7 @@ const MaintenancePage = () => {
             label="名前"
             fullWidth
             variant="standard"
+            defaultValue={selectedCustomerOrder?.name}
             onChange={editCustomerOder}
           />
           <TextField
@@ -276,53 +258,13 @@ const MaintenancePage = () => {
             label="ファーストドリンク"
             fullWidth
             variant="standard"
+            defaultValue={selectedCustomerOrder?.drink}
             onChange={editCustomerOder}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={clickEditFormOk}>OK</Button>
+          <Button onClick={onEditFormOkClick}>OK</Button>
           <Button onClick={closeEditForm}>戻る</Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
-  const AddForm = () => {
-    return (
-      <Dialog open={openAddForm} onClose={closeAddForm}>
-        <DialogContent>
-          <DialogContentText>追加</DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="group"
-            label="グループ"
-            fullWidth
-            variant="standard"
-            onChange={addCustomerOder}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="名前"
-            fullWidth
-            variant="standard"
-            onChange={addCustomerOder}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="drink"
-            label="ファーストドリンク"
-            fullWidth
-            variant="standard"
-            onChange={addCustomerOder}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={clickAddFormOk}>OK</Button>
-          <Button onClick={closeAddForm}>戻る</Button>
         </DialogActions>
       </Dialog>
     );
@@ -335,7 +277,7 @@ const MaintenancePage = () => {
           <DialogContentText>本当に削除しますか？</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={clickConfirmationOk}>はい</Button>
+          <Button onClick={onConfirmationOkClick}>はい</Button>
           <Button onClick={closeConfirmation}>いいえ</Button>
         </DialogActions>
       </Dialog>
@@ -350,7 +292,7 @@ const MaintenancePage = () => {
         <Stack direction="row" justifyContent="flex-end" sx={{ my: "3vh", mr: "3vh" }}>
           <Button
             variant="outlined"
-            onClick={clickMainMenu}
+            onClick={onMainMenuClick}
             sx={{ width: "20vh", fontWeight: "bold", fontSize: "2vh" }}
           >
             メイン画面
@@ -367,7 +309,6 @@ const MaintenancePage = () => {
         </Grid>
       </Box>
       <EditForm />
-      <AddForm />
       <Confirmation />
     </>
   );

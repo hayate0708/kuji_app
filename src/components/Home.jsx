@@ -24,9 +24,8 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const selectDivision = (divison) => {
+  const selectDivision = (division) => {
     setCustomerDialog({ isShown: true });
-    console.log(divison);
   };
 
   const clickAdministrator = () => {
@@ -38,11 +37,7 @@ const Home = () => {
       <Box sx={{ height: height, width: width }}>
         <Box sx={{ height: "7vh" }} />
 
-        <Stack
-          direction="row"
-          justifyContent="flex-end"
-          sx={{ mt: "3vh", mr: "3vh" }}
-        >
+        <Stack direction="row" justifyContent="flex-end" sx={{ mt: "3vh", mr: "3vh" }}>
           <Box>
             <Button
               variant="outlined"
@@ -54,19 +49,10 @@ const Home = () => {
           </Box>
         </Stack>
 
-        <Typography
-          align="center"
-          sx={{ mt: "10vh", flexGrow: 1, fontWeight: "bold", fontSize: "5vh" }}
-        >
+        <Typography align="center" sx={{ mt: "10vh", flexGrow: 1, fontWeight: "bold", fontSize: "5vh" }}>
           席決めくじ引き
         </Typography>
-        <Stack
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          spacing={4}
-          sx={{ mt: "10vh" }}
-        >
+        <Stack direction="row" justifyContent="center" alignItems="center" spacing={4} sx={{ mt: "10vh" }}>
           <Button
             variant="contained"
             direction="row"
@@ -75,10 +61,7 @@ const Home = () => {
             }}
             sx={{ width: "38vh", height: "20vh" }}
           >
-            <Typography
-              align="center"
-              sx={{ flexGrow: 1, fontWeight: "bold", fontSize: "3vh" }}
-            >
+            <Typography align="center" sx={{ flexGrow: 1, fontWeight: "bold", fontSize: "3vh" }}>
               販売店システム部
             </Typography>
           </Button>
@@ -90,10 +73,7 @@ const Home = () => {
             }}
             sx={{ width: "38vh", height: "20vh" }}
           >
-            <Typography
-              align="center"
-              sx={{ flexGrow: 1, fontWeight: "bold", fontSize: "3vh" }}
-            >
+            <Typography align="center" sx={{ flexGrow: 1, fontWeight: "bold", fontSize: "3vh" }}>
               代理店・法人システム部
             </Typography>
           </Button>
