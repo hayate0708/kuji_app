@@ -1,6 +1,6 @@
 import httpClient from "apis/common/HttpClient";
 
-const urlPrefix = process.env.REACT_APP_URL_PREFIX;
+const urlPrefix = process.env.REACT_APP_API_URL_PREFIX;
 
 const getAdministratorApi = async (id, password) => {
   try {
