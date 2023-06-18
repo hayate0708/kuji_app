@@ -1,19 +1,22 @@
 import React from "react";
-import {
-  Dialog,
-  Typography,
-  Stack,
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  TextField,
-} from "@mui/material";
+
+// API
+import customerOrdersApi from "apis/CustomerOrdersApi";
+
+// MUI
+import Dialog from "@mui/material/Dialog";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import TextField from "@mui/material/TextField";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-const useCustomerForm = () => {
-  const [dialog, setDialog] = React.useState({ isShown: false });
+const useLotteryForm = () => {
+  const [dialog, setDialog] = React.useState({ isShown: false, division: null });
   const [lottery, setLottery] = React.useState(false);
   const [kujiResult, setKujiResult] = React.useState();
 
@@ -30,9 +33,24 @@ const useCustomerForm = () => {
 
   const clickCustomerFormOk = async () => {
     if (editedName && editedDrink) {
-      setLottery(true);
-      await wait(3); // ここで10秒間止まります
-      setKujiResult("A");
+      const response = await customerOrdersApi.getCustomerOrdersApi();
+      const customerOrders = response.filter((customerOrder) => {
+        return (
+          customerOrder.division === dialog.division && customerOrder.name === null && customerOrder.drink === null
+        );
+      });
+
+      const customerOrder = customerOrders[Math.floor(Math.random() * customerOrders.length)];
+
+      if (customerOrder) {
+        setLottery(true);
+        await wait(2);
+        setKujiResult(customerOrder.group);
+
+        await customerOrdersApi.updateCustomerOrderApi({ ...customerOrder, name: editedName, drink: editedDrink });
+      } else {
+        window.alert("グループを設定してください");
+      }
     } else {
       window.alert("名前とドリンクを入力してください");
     }
@@ -108,4 +126,4 @@ const useCustomerForm = () => {
   return [CustomerForm, setDialog];
 };
 
-export default useCustomerForm;
+export default useLotteryForm;

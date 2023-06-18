@@ -4,19 +4,20 @@ import React from "react";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useWindowDimension } from "components/common/WindowDimension";
 
-// COMPONENTS
-import useCustomerForm from "components/CustomerForm";
-import useAdministratorForm from "components/AdministratorForm";
-
-// API
+// COMPONENT
+import useLotteryForm from "components/home/LotteryForm";
+import useAdministratorForm from "components/home/AdministratorForm";
 
 // MUI
-import { Typography, Box, Stack, Button } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 
 const Home = () => {
   const { setTitle } = useGlobalContext();
   const { width, height } = useWindowDimension();
-  const [CustomerForm, setCustomerDialog] = useCustomerForm();
+  const [CustomerForm, setCustomerDialog] = useLotteryForm();
   const [AdministratorForm, setAdministratorDialog] = useAdministratorForm();
 
   React.useEffect(() => {
@@ -25,7 +26,7 @@ const Home = () => {
   }, []);
 
   const selectDivision = (division) => {
-    setCustomerDialog({ isShown: true });
+    setCustomerDialog({ isShown: true, division });
   };
 
   const clickAdministrator = () => {
@@ -57,7 +58,7 @@ const Home = () => {
             variant="contained"
             direction="row"
             onClick={() => {
-              selectDivision("販売店システム部");
+              selectDivision("1");
             }}
             sx={{ width: "38vh", height: "20vh" }}
           >
@@ -69,7 +70,7 @@ const Home = () => {
             variant="contained"
             direction="row"
             onClick={() => {
-              selectDivision("代理店・法人システム部");
+              selectDivision("2");
             }}
             sx={{ width: "38vh", height: "20vh" }}
           >

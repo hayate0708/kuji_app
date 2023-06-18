@@ -1,31 +1,33 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useWindowDimension } from "components/common/WindowDimension";
+
+// CONTEXT
 import { useGlobalContext } from "contexts/GlobalContext";
+
+// COMPONENT
+import { useWindowDimension } from "components/common/WindowDimension";
 
 // API
 import customerOrdersApi from "apis/CustomerOrdersApi";
 
 // MUI
-import {
-  Box,
-  Button,
-  IconButton,
-  Grid,
-  Stack,
-  Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import TextField from "@mui/material/TextField";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -42,9 +44,9 @@ const MaintenancePage = () => {
 
   const navigate = useNavigate();
 
-  let editedGroup = null;
-  let editedName = null;
-  let editedDrink = null;
+  let editedGroup = "";
+  let editedName = "";
+  let editedDrink = "";
 
   React.useEffect(() => {
     setTitle("管理者画面");
@@ -238,7 +240,8 @@ const MaintenancePage = () => {
             label="グループ"
             fullWidth
             variant="standard"
-            defaultValue={selectedCustomerOrder?.group}
+            // defaultValue={selectedCustomerOrder?.group}
+            inputProps={{ maxLength: 1 }}
             onChange={editCustomerOder}
           />
           <TextField
@@ -248,7 +251,8 @@ const MaintenancePage = () => {
             label="名前"
             fullWidth
             variant="standard"
-            defaultValue={selectedCustomerOrder?.name}
+            // defaultValue={selectedCustomerOrder?.name}
+            inputProps={{ maxLength: 25 }}
             onChange={editCustomerOder}
           />
           <TextField
@@ -258,7 +262,8 @@ const MaintenancePage = () => {
             label="ファーストドリンク"
             fullWidth
             variant="standard"
-            defaultValue={selectedCustomerOrder?.drink}
+            // defaultValue={selectedCustomerOrder?.drink}
+            inputProps={{ maxLength: 50 }}
             onChange={editCustomerOder}
           />
         </DialogContent>

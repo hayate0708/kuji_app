@@ -1,8 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+// API
 import administratorApi from "apis/AdministratorApi";
-import { Typography, Dialog, Button, DialogActions, DialogContent, DialogContentText, TextField } from "@mui/material";
+
+// MUI
+import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import Button from "@mui/material/Button";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import TextField from "@mui/material/TextField";
 
 const useAdministratorForm = () => {
   const [dialog, setDialog] = React.useState({ isShown: false });
