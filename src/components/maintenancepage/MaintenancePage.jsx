@@ -44,9 +44,9 @@ const MaintenancePage = () => {
 
   const navigate = useNavigate();
 
-  let editedGroup = "";
-  let editedName = "";
-  let editedDrink = "";
+  const groupRef = React.useRef(null);
+  const nameRef = React.useRef(null);
+  const drinkRef = React.useRef(null);
 
   React.useEffect(() => {
     setTitle("管理者画面");
@@ -90,24 +90,11 @@ const MaintenancePage = () => {
     }
   };
 
-  const editCustomerOder = (event) => {
-    if (event.target.id === "group") {
-      editedGroup = event.target.value;
-    } else if (event.target.id === "name") {
-      editedName = event.target.value;
-    } else {
-      editedDrink = event.target.value;
-    }
-  };
-
   const onMainMenuClick = () => {
     navigate("/");
   };
 
   const onEditButtonClick = (customerOrder) => {
-    editedGroup = customerOrder.group;
-    editedName = customerOrder.name;
-    editedDrink = customerOrder.drink;
     setMode("edit");
     setSelectedCustomerOrder(customerOrder);
     setOpenEditForm(true);
@@ -131,21 +118,24 @@ const MaintenancePage = () => {
   };
 
   const onEditFormOkClick = async () => {
-    if (editedGroup !== "") {
+    const group = groupRef.current.value;
+    const name = nameRef.current.value;
+    const drink = drinkRef.current.value;
+    if (group) {
       if (mode === "edit") {
         await customerOrdersApi.updateCustomerOrderApi({
           id: selectedCustomerOrder.id,
           division: selectedCustomerOrder.division,
-          group: editedGroup,
-          name: editedName,
-          drink: editedDrink,
+          group,
+          name,
+          drink,
         });
       } else {
         await customerOrdersApi.addCustomerOrderApi({
           division: selectedCustomerOrder.division,
-          group: editedGroup,
-          name: editedName,
-          drink: editedDrink,
+          group,
+          name,
+          drink,
         });
       }
       getCustomerOrders();
@@ -167,7 +157,13 @@ const MaintenancePage = () => {
 
   const closeConfirmation = () => setOpenConfirmation(false);
 
-  const header = ["グループ", "名前", "ドリンク", "編集", "削除"];
+  const headerSettings = [
+    { name: "グループ", width: "20%" },
+    { name: "名前", width: "35%" },
+    { name: "ドリンク", width: "35%" },
+    { name: "", width: "5%" },
+    { name: "", width: "5%" },
+  ];
 
   const CustomerTable = ({ division, customerOrders }) => {
     return (
@@ -175,14 +171,14 @@ const MaintenancePage = () => {
         <Typography align="center" sx={{ mt: "1vh", mb: "2vh", fontSize: "4vh" }}>
           {division === "1" ? "販売店システム部" : "代理店・法人システム部"}
         </Typography>
-        <TableContainer sx={{ minHeight: "10vh", width: "70vh" }}>
+        <TableContainer sx={{ minHeight: "10vh", width: "70vh", height: "55vh" }}>
           <Table>
             <TableHead>
               <TableRow>
-                {header.map((title) => {
+                {headerSettings.map((setting, count) => {
                   return (
-                    <TableCell key={title} sx={{ color: "white", bgcolor: "primary.light" }}>
-                      {title}
+                    <TableCell key={count} sx={{ color: "white", bgcolor: "primary.light", width: setting.width }}>
+                      {setting.name}
                     </TableCell>
                   );
                 })}
@@ -240,9 +236,9 @@ const MaintenancePage = () => {
             label="グループ"
             fullWidth
             variant="standard"
-            // defaultValue={selectedCustomerOrder?.group}
+            defaultValue={selectedCustomerOrder?.group}
             inputProps={{ maxLength: 1 }}
-            onChange={editCustomerOder}
+            inputRef={groupRef}
           />
           <TextField
             autoFocus
@@ -251,9 +247,9 @@ const MaintenancePage = () => {
             label="名前"
             fullWidth
             variant="standard"
-            // defaultValue={selectedCustomerOrder?.name}
+            defaultValue={selectedCustomerOrder?.name}
             inputProps={{ maxLength: 25 }}
-            onChange={editCustomerOder}
+            inputRef={nameRef}
           />
           <TextField
             autoFocus
@@ -262,9 +258,9 @@ const MaintenancePage = () => {
             label="ファーストドリンク"
             fullWidth
             variant="standard"
-            // defaultValue={selectedCustomerOrder?.drink}
+            defaultValue={selectedCustomerOrder?.drink}
             inputProps={{ maxLength: 50 }}
-            onChange={editCustomerOder}
+            inputRef={drinkRef}
           />
         </DialogContent>
         <DialogActions>

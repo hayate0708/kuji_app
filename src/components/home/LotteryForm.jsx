@@ -20,26 +20,18 @@ const useLotteryForm = () => {
   const [lottery, setLottery] = React.useState(false);
   const [kujiResult, setKujiResult] = React.useState();
 
-  let editedName = "";
-  let editedDrink = "";
-
-  const editCustomerOder = (event) => {
-    if (event.target.id === "name") {
-      editedName = event.target.value;
-    } else {
-      editedDrink = event.target.value;
-    }
-  };
+  const nameRef = React.useRef(null);
+  const drinkRef = React.useRef(null);
 
   const clickCustomerFormOk = async () => {
-    if (editedName && editedDrink) {
+    const name = nameRef.current.value;
+    const drink = drinkRef.current.value;
+
+    if (name && drink) {
       const response = await customerOrdersApi.getCustomerOrdersApi();
       const customerOrders = response.filter((customerOrder) => {
-        return (
-          customerOrder.division === dialog.division && customerOrder.name === null && customerOrder.drink === null
-        );
+        return customerOrder.division === dialog.division && !customerOrder.name && !customerOrder.drink;
       });
-
       const customerOrder = customerOrders[Math.floor(Math.random() * customerOrders.length)];
 
       if (customerOrder) {
@@ -47,7 +39,7 @@ const useLotteryForm = () => {
         await wait(2);
         setKujiResult(customerOrder.group);
 
-        await customerOrdersApi.updateCustomerOrderApi({ ...customerOrder, name: editedName, drink: editedDrink });
+        await customerOrdersApi.updateCustomerOrderApi({ ...customerOrder, name, drink });
       } else {
         window.alert("グループを設定してください");
       }
@@ -57,7 +49,7 @@ const useLotteryForm = () => {
   };
 
   const closeCustomerForm = () => {
-    setDialog(false);
+    setDialog({ isShown: false, division: null });
     setLottery(false);
     setKujiResult(false);
   };
@@ -73,10 +65,7 @@ const useLotteryForm = () => {
       <DialogContent>
         {!lottery && (
           <>
-            {/* <DialogTitle>Subscribe</DialogTitle> */}
-
             <DialogContentText>名前とファーストドリンクを入力してください</DialogContentText>
-            {/* {error && <ErrorMessage />} */}
             <TextField
               autoFocus
               margin="dense"
@@ -84,7 +73,7 @@ const useLotteryForm = () => {
               label="名前"
               fullWidth
               variant="standard"
-              onChange={editCustomerOder}
+              inputRef={nameRef}
             />
             <TextField
               autoFocus
@@ -93,7 +82,7 @@ const useLotteryForm = () => {
               label="ファーストドリンク"
               fullWidth
               variant="standard"
-              onChange={editCustomerOder}
+              inputRef={drinkRef}
             />
 
             <DialogActions>
