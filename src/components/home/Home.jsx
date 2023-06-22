@@ -1,12 +1,12 @@
 import React from "react";
 
 // CONTEXT
-import { useGlobalContext } from "contexts/GlobalContext";
-import { useWindowDimension } from "components/common/WindowDimension";
+import { useGlobalContext } from "../../contexts/GlobalContext";
+import { useWindowDimension } from "../../components/common/WindowDimension";
 
 // COMPONENT
-import useLotteryForm from "components/home/LotteryForm";
-import useAdministratorForm from "components/home/AdministratorForm";
+import useLotteryForm from "../../components/home/LotteryForm";
+import useAdministratorForm from "../../components/home/AdministratorForm";
 
 // MUI
 import Typography from "@mui/material/Typography";

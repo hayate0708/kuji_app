@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 // API
-import administratorApi from "apis/AdministratorApi";
+import administratorApi from "../../apis/AdministratorApi";
 
 // MUI
 import Typography from "@mui/material/Typography";

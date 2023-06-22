@@ -1,7 +1,7 @@
 import React from "react";
 
 // API
-import customerOrdersApi from "apis/CustomerOrdersApi";
+import customerOrdersApi from "../../apis/CustomerOrdersApi";
 
 // MUI
 import Dialog from "@mui/material/Dialog";

@@ -5,9 +5,9 @@ import { Routes, Route } from "react-router-dom";
 import { GlobalContext } from "contexts/GlobalContext";
 
 // COMPONENT
-import Home from "components/home/Home";
-import MaintenancePage from "components/maintenancepage/MaintenancePage";
-import useHeader from "components/common/Header";
+import Home from "./components/home/Home";
+import MaintenancePage from "./components/maintenancepage/MaintenancePage";
+import useHeader from "./components/common/Header";
 
 function App() {
   const [Header, setTitle] = useHeader();

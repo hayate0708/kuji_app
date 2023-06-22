@@ -2,13 +2,13 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 // CONTEXT
-import { useGlobalContext } from "contexts/GlobalContext";
+import { useGlobalContext } from "../../contexts/GlobalContext";
 
 // COMPONENT
-import { useWindowDimension } from "components/common/WindowDimension";
+import { useWindowDimension } from "../../components/common/WindowDimension";
 
 // API
-import customerOrdersApi from "apis/CustomerOrdersApi";
+import customerOrdersApi from "../../apis/CustomerOrdersApi";
 
 // MUI
 import Box from "@mui/material/Box";
